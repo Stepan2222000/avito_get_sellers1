@@ -94,7 +94,7 @@ class ValidationSettings:
 
 @dataclass(slots=True)
 class ValidationExecutorSettings:
-    concurrency: int = 10
+    concurrency: int = 30
     request_timeout: float = 500.0
     max_retries: int = 3
     retry_delay_seconds: float = 5.0
