@@ -11,6 +11,7 @@ from src.log import log_event
 from src.proxy_pool import ProxyPool
 from src.queue import CatalogTaskQueue
 from src.worker import CatalogWorker
+from src.validation_executor import ValidationExecutor
 
 WORKER_RESTART_DELAY = 1.0
 
@@ -74,7 +75,7 @@ async def _prepare_tasks(urls: Iterable[str]) -> list[Tuple[str, dict[str, str]]
     return tasks
 
 
-async def bootstrap_runner() -> tuple[CatalogTaskQueue, ProxyPool]:
+async def bootstrap_runner() -> tuple[CatalogTaskQueue, ProxyPool, ValidationExecutor]:
     """Прочитать входные данные, инициализировать очередь и пул прокси."""
     links = await _read_lines(config.LINKS_FILE)
     urls = _deduplicate_urls(links)
@@ -84,38 +85,71 @@ async def bootstrap_runner() -> tuple[CatalogTaskQueue, ProxyPool]:
     inserted = await queue.put_many(task_items)
 
     proxy_pool = await ProxyPool.create(config)
+    validation_executor = ValidationExecutor(
+        queue=queue,
+        proxy_pool=proxy_pool,
+        concurrency=config.VALIDATION_CONCURRENCY,
+        request_timeout=config.VALIDATION_REQUEST_TIMEOUT_SEC,
+        max_retries=config.VALIDATION_MAX_RETRIES,
+        retry_delay=config.VALIDATION_RETRY_DELAY_SEC,
+    )
+    validation_executor.start()
+
     log_event(
         "runner_bootstrap",
         total_urls=len(urls),
         queued=inserted,
         worker_count=config.WORKER_COUNT,
+        validation_concurrency=config.VALIDATION_CONCURRENCY,
     )
-    return queue, proxy_pool
+    return queue, proxy_pool, validation_executor
 
 
-async def runner_loop(queue: CatalogTaskQueue, proxy_pool: ProxyPool) -> None:
+async def runner_loop(queue: CatalogTaskQueue, proxy_pool: ProxyPool, validation_executor: ValidationExecutor) -> None:
     """Создать воркеры и подождать их завершения."""
     tasks = [
-        asyncio.create_task(_run_worker_with_restart(worker_id=i, queue=queue, proxy_pool=proxy_pool))
+        asyncio.create_task(
+            _run_worker_with_restart(
+                worker_id=i,
+                queue=queue,
+                proxy_pool=proxy_pool,
+                validation_executor=validation_executor,
+            )
+        )
         for i in range(config.WORKER_COUNT)
     ]
 
     # Гарантируем, что поддерживаем постоянное число воркеров,
     # перезапуская их при аварийном завершении.
-    await asyncio.gather(*tasks)
+    try:
+        await asyncio.gather(*tasks)
+        await validation_executor.drain()
+    finally:
+        await validation_executor.shutdown()
 
 
 async def main() -> None:
     """Точка входа для запуска через `python -m src.runner`."""
-    queue, proxy_pool = await bootstrap_runner()
-    await runner_loop(queue, proxy_pool)
+    queue, proxy_pool, validation_executor = await bootstrap_runner()
+    await runner_loop(queue, proxy_pool, validation_executor)
 
 
-async def _run_worker_with_restart(*, worker_id: int, queue: CatalogTaskQueue, proxy_pool: ProxyPool) -> None:
+async def _run_worker_with_restart(
+    *,
+    worker_id: int,
+    queue: CatalogTaskQueue,
+    proxy_pool: ProxyPool,
+    validation_executor: ValidationExecutor,
+) -> None:
     """Обёртка, которая перезапускает воркер при аварийном завершении."""
     restart_count = 0
     while True:
-        worker = CatalogWorker(worker_id=worker_id, queue=queue, proxy_pool=proxy_pool)
+        worker = CatalogWorker(
+            worker_id=worker_id,
+            queue=queue,
+            proxy_pool=proxy_pool,
+            validation_executor=validation_executor,
+        )
         try:
             await worker.run()
             log_event("worker_stopped", worker_id=worker_id, reason="completed")

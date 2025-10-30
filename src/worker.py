@@ -2,12 +2,11 @@
 from __future__ import annotations
 
 import asyncio
-import json
 from collections import defaultdict
 import contextvars
 from contextlib import suppress
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Optional
+from typing import Any, Dict, Mapping, Optional
 
 from avito_library import detect_page_state, resolve_captcha_flow
 from avito_library.parsers.catalog_parser import (
@@ -24,7 +23,9 @@ import config
 from src.log import log_event
 from src.proxy_pool import ProxyEndpoint, ProxyPool
 from src.queue import CatalogTask, CatalogTaskQueue
-from src.validator_runner import extract_article_from_url, validate_catalog
+from src.validator_runner import extract_article_from_url
+from src.validation_executor import ValidationExecutor, ValidationJob
+from src.result_utils import SELLER_FIELDS
 
 CATALOG_FIELDS = {
     "item_id",
@@ -41,8 +42,6 @@ CATALOG_FIELDS = {
     "promoted",
     "published_ago",
 }
-
-SELLER_FIELDS = ("seller_url", "seller_reviews", "seller_id", "seller_name")
 
 LISTING_SERIALIZED_FIELDS = tuple(sorted(CATALOG_FIELDS | set(SELLER_FIELDS)))
 
@@ -94,48 +93,6 @@ def _result_path(payload: Mapping[str, Any]) -> Path:
     return config.RESULTS_DIR / "result.json"
 
 
-def _extract_seller(listing: Any) -> Optional[Dict[str, Any]]:
-    """Достать информацию о продавце из структуры каталога."""
-
-    def _get(attr: str) -> Any:
-        if isinstance(listing, Mapping):
-            return listing.get(attr)
-        return getattr(listing, attr, None)
-
-    seller_url = _get("seller_url")
-    seller_reviews = _get("seller_reviews")
-    seller_id = _get("seller_id")
-    seller_name = _get("seller_name")
-
-    if not seller_url and not seller_id:
-        return None
-    return {
-        "seller_url": seller_url,
-        "seller_reviews": seller_reviews,
-        "seller_id": seller_id,
-        "seller_name": seller_name,
-    }
-
-
-def _meta_to_dict(meta: Any) -> Dict[str, Any]:
-    """Сконвертировать объект метаданных в сериализуемый словарь."""
-    status = getattr(meta, "status", None)
-    status_value = status.value if isinstance(status, CatalogParseStatus) else status
-    return {
-        "status": status_value,
-        "pages_processed": getattr(meta, "processed_pages", None),
-        "cards_processed": getattr(meta, "processed_cards", None),
-        "details": getattr(meta, "details", None),
-        "last_state": getattr(meta, "last_state", None),
-        "last_url": getattr(meta, "last_url", None),
-    }
-
-
-async def _ensure_dir(path: Path) -> None:
-    """Создать директорию под файл результата, если её ещё нет."""
-    await asyncio.to_thread(path.parent.mkdir, parents=True, exist_ok=True)
-
-
 def _listing_to_dict(listing: Any) -> Dict[str, Any]:
     """Собрать сериализуемое представление карточки каталога."""
 
@@ -149,37 +106,6 @@ def _listing_to_dict(listing: Any) -> Dict[str, Any]:
     # Поле seller_url может отсутствовать в модели каталога.
     data.setdefault("seller_url", None)
     return data
-
-
-def _to_int(value: Any) -> int:
-    if value is None:
-        return 0
-    if isinstance(value, bool):
-        return int(value)
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return 0
-
-
-def _collect_sellers(listings: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
-    """Собрать уникальных продавцов из валидных карточек."""
-
-    result: Dict[str, dict[str, Any]] = {}
-    for listing in listings:
-        seller = _extract_seller(listing)
-        if not seller:
-            continue
-        key = seller.get("seller_id") or seller.get("seller_url") or seller.get("seller_name")
-        if not key:
-            continue
-        reviews = _to_int(seller.get("seller_reviews"))
-        current = result.get(key)
-        if current is None or reviews > _to_int(current.get("seller_reviews")):
-            seller_copy = dict(seller)
-            seller_copy["seller_reviews"] = reviews
-            result[key] = seller_copy
-    return list(result.values())
 
 
 _CURRENT_WORKER: contextvars.ContextVar[Optional[int]] = contextvars.ContextVar(
@@ -220,10 +146,18 @@ set_page_exchange(_WorkerPageExchange())
 class CatalogWorker:
     """Асинхронный воркер, обрабатывающий задачи очереди."""
 
-    def __init__(self, *, worker_id: int, queue: CatalogTaskQueue, proxy_pool: ProxyPool) -> None:
+    def __init__(
+        self,
+        *,
+        worker_id: int,
+        queue: CatalogTaskQueue,
+        proxy_pool: ProxyPool,
+        validation_executor: ValidationExecutor,
+    ) -> None:
         self.worker_id = worker_id
         self.queue = queue
         self.proxy_pool = proxy_pool
+        self.validation_executor = validation_executor
 
         self._playwright: Optional[Playwright] = None
         self._browser: Optional[Browser] = None
@@ -247,7 +181,8 @@ class CatalogWorker:
             task = await self.queue.get()
             if task is None:
                 pending = await self.queue.pending_count()
-                if pending == 0:
+                has_validation = await self.validation_executor.has_pending_jobs()
+                if pending == 0 and not has_validation:
                     log_event("worker_finished", worker_id=self.worker_id)
                     break
                 await asyncio.sleep(0.5)
@@ -308,94 +243,37 @@ class CatalogWorker:
             article = extract_article_from_url(url)
             listing_payloads = [_listing_to_dict(listing) for listing in listings]
 
-            validation = await validate_catalog(
-                article=article,
-                listings=listing_payloads,
-                source_url=url,
-            )
-            valid_listings = validation.valid_listings
-            sellers = _collect_sellers(valid_listings)
-
-            log_event(
-                "validation_summary",
-                worker_id=self.worker_id,
-                item_id=task.task_key,
-                article=article or None,
-                listings_total=validation.total,
-                listings_valid=len(valid_listings),
-                sellers=len(sellers),
-                skipped_prefilter=validation.skipped_prefilter,
-                invalid_sellers=len(validation.invalid_sellers),
-                model_invalid=validation.model_invalid,
-                model_missing=validation.model_missing,
-                model_used=validation.model_used,
-            )
-
             result_path = _result_path(payload)
-            if sellers:
-                await _ensure_dir(result_path)
-                data = {
-                    "source_url": url,
-                    "article": article,
-                    "is_complete": meta.status is CatalogParseStatus.SUCCESS if meta else False,
-                    "valid_listing_count": len(valid_listings),
-                    "sellers": sellers,
-                    "meta": _meta_to_dict(meta),
-                }
-                await asyncio.to_thread(result_path.write_text, json.dumps(data, ensure_ascii=False, indent=2), "utf-8")
-
             status = meta.status if meta else None
             status_value = status.value if isinstance(status, CatalogParseStatus) else status
 
-            if status in SUCCESS_STATUSES:
-                event = "task_success_empty" if status is CatalogParseStatus.EMPTY or not sellers else "task_success"
-                log_event(
-                    event,
-                    worker_id=self.worker_id,
-                    item_id=task.task_key,
-                    sellers=len(sellers),
-                    valid_listings=len(valid_listings),
-                    proxy=self._proxy.address if self._proxy else None,
-                    attempt=task.attempt,
-                )
-                await self.queue.mark_done(task.task_key)
-                return
-
-            retryable = status in RETRYABLE_STATUSES or status is None
-            if not retryable:
-                log_event(
-                    "task_failed",
-                    worker_id=self.worker_id,
-                    item_id=task.task_key,
-                    reason=status_value or "unhandled_status",
-                    proxy=self._proxy.address if self._proxy else None,
-                    attempt=task.attempt,
-                )
-                await self.queue.mark_done(task.task_key)
-                return
-
-            if sellers:
-                log_event(
-                    "task_partial",
-                    worker_id=self.worker_id,
-                    item_id=task.task_key,
-                    sellers=len(sellers),
-                    valid_listings=len(valid_listings),
-                    proxy=self._proxy.address if self._proxy else None,
-                    status=status_value,
-                    attempt=task.attempt,
-                )
-            else:
-                log_event(
-                    "task_failed",
-                    worker_id=self.worker_id,
-                    item_id=task.task_key,
-                    reason=status_value or "unknown_status",
-                    valid_listings=len(valid_listings),
-                    proxy=self._proxy.address if self._proxy else None,
-                    attempt=task.attempt,
-                )
-            await self._retry_task(task, status=status, reason=status_value or "unknown_status")
+            job = ValidationJob(
+                task_key=task.task_key,
+                attempt=task.attempt,
+                url=url,
+                article=article,
+                listings=listing_payloads,
+                meta=meta,
+                status=status,
+                status_label=status_value,
+                result_path=result_path,
+                proxy_address=self._proxy.address if self._proxy else None,
+                worker_id=self.worker_id,
+                retryable=status in RETRYABLE_STATUSES or status is None,
+                success_status=status in SUCCESS_STATUSES,
+                delay_on_retry=status in DELAY_STATUSES,
+                blocking_status=status if status in BLOCKING_PROXY_STATUSES else None,
+                blocking_reason=BLOCK_REASON.get(status),
+            )
+            await self.validation_executor.submit(job)
+            log_event(
+                "validation_deferred",
+                worker_id=self.worker_id,
+                item_id=task.task_key,
+                listings=len(listing_payloads),
+                status=status_value,
+            )
+            return
         except Exception as exc:  # pylint: disable=broad-except
             log_event(
                 "task_failed",

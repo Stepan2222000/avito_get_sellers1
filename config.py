@@ -91,6 +91,14 @@ class ValidationSettings:
 
 
 @dataclass(slots=True)
+class ValidationExecutorSettings:
+    concurrency: int = 10
+    request_timeout: float = 500.0
+    max_retries: int = 3
+    retry_delay_seconds: float = 5.0
+
+
+@dataclass(slots=True)
 class LoggingSettings:
     level: str = "INFO"
     json_logs: bool = False
@@ -106,6 +114,7 @@ class Config:
     deepinfra: DeepInfraSettings = field(default_factory=DeepInfraSettings)
     provider: ProviderSettings = field(default_factory=ProviderSettings)
     validation: ValidationSettings = field(default_factory=ValidationSettings)
+    validation_executor: ValidationExecutorSettings = field(default_factory=ValidationExecutorSettings)
     logging: LoggingSettings = field(default_factory=LoggingSettings)
 
 
@@ -118,6 +127,7 @@ GEMINI = CONFIG.gemini
 OPENAI = CONFIG.openai
 PROVIDER = CONFIG.provider
 VALIDATION = CONFIG.validation
+VALIDATION_EXECUTOR = CONFIG.validation_executor
 LOGGING = CONFIG.logging
 
 RESULTS_DIR = PATHS.results_dir
@@ -163,6 +173,11 @@ USE_DEEPINFRA = PROVIDER_NAME == "deepinfra"
 
 LOG_LEVEL = LOGGING.level
 
+VALIDATION_CONCURRENCY = VALIDATION_EXECUTOR.concurrency
+VALIDATION_REQUEST_TIMEOUT_SEC = VALIDATION_EXECUTOR.request_timeout
+VALIDATION_MAX_RETRIES = VALIDATION_EXECUTOR.max_retries
+VALIDATION_RETRY_DELAY_SEC = VALIDATION_EXECUTOR.retry_delay_seconds
+
 __all__ = [
     "CONFIG",
     "Config",
@@ -171,6 +186,7 @@ __all__ = [
     "PlaywrightSettings",
     "GeminiSettings",
     "ValidationSettings",
+    "ValidationExecutorSettings",
     "LoggingSettings",
     "DATA_DIR",
     "RESULTS_DIR",
@@ -206,4 +222,9 @@ __all__ = [
     "USE_OPENAI",
     "USE_DEEPINFRA",
     "LOG_LEVEL",
+    "VALIDATION_EXECUTOR",
+    "VALIDATION_CONCURRENCY",
+    "VALIDATION_REQUEST_TIMEOUT_SEC",
+    "VALIDATION_MAX_RETRIES",
+    "VALIDATION_RETRY_DELAY_SEC",
 ]
