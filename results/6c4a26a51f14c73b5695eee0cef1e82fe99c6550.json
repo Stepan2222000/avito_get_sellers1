@@ -1,0 +1,34 @@
+{
+  "source_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=31106893550",
+  "article": "31106893550",
+  "is_complete": true,
+  "valid_listing_count": 3,
+  "sellers": [
+    {
+      "seller_url": null,
+      "seller_reviews": 582,
+      "seller_id": "i356354892",
+      "seller_name": "AutoNut"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 207,
+      "seller_id": "i142556764",
+      "seller_name": "PDA.STORE - ORIGINAL PARTS"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 640,
+      "seller_id": "7859ddf1f1729518cbe07c7027208c48",
+      "seller_name": "MOSZAPCAST ORIGINAL PARTS"
+    }
+  ],
+  "meta": {
+    "status": "success",
+    "pages_processed": 5,
+    "cards_processed": 250,
+    "details": null,
+    "last_state": "catalog_page_detector",
+    "last_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?context=H4sIAAAAAAAA_wEmANn_YToxOntzOjE6InkiO3M6MTY6InFKZnBSdm1NUlFGQWRrNkoiO30IsTVMJgAAAA&p=5&q=31106893550"
+  }
+}

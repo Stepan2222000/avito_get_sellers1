@@ -1,0 +1,22 @@
+{
+  "source_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=%D0%904634100902",
+  "article": "А4634100902",
+  "is_complete": true,
+  "valid_listing_count": 1,
+  "sellers": [
+    {
+      "seller_url": null,
+      "seller_reviews": 869,
+      "seller_id": "48dc22a90e9509d863cf7f349bd2e6e3",
+      "seller_name": "MR Parts"
+    }
+  ],
+  "meta": {
+    "status": "success",
+    "pages_processed": 1,
+    "cards_processed": 38,
+    "details": null,
+    "last_state": "catalog_page_detector",
+    "last_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=%D0%904634100902"
+  }
+}

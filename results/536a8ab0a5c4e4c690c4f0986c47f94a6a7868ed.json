@@ -1,0 +1,82 @@
+{
+  "source_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=%D0%904476706600",
+  "article": "А4476706600",
+  "is_complete": true,
+  "valid_listing_count": 11,
+  "sellers": [
+    {
+      "seller_url": null,
+      "seller_reviews": 121,
+      "seller_id": "premiumauto108",
+      "seller_name": "PremiumAuto"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 14,
+      "seller_id": "5fb283d02027d97ec0beda852d9df290",
+      "seller_name": "IMPERIUM AUTO"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 148,
+      "seller_id": "i362538503",
+      "seller_name": "EuroParts"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 149,
+      "seller_id": "i6976221",
+      "seller_name": "Андрей"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 46,
+      "seller_id": "d41dae292c9a7b861180921998fb3c8a",
+      "seller_name": "Мирус EasyAuto"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 115,
+      "seller_id": "5c9cfc9fbefe847e2d7d5b49333e8f25",
+      "seller_name": "WorldZap"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 13,
+      "seller_id": "2ea0dcbd15e298c456a1137424a86756",
+      "seller_name": "Premium autoPARTS Shop"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 40,
+      "seller_id": "383fb351334cc78ee5e5dacc63a2f382",
+      "seller_name": "DealerParts"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 467,
+      "seller_id": "azimutparts",
+      "seller_name": "Azimut Parts"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 136,
+      "seller_id": "i369151154",
+      "seller_name": "AK-Family"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 240,
+      "seller_id": "6640ef7698315f7761e95156ef443d2e",
+      "seller_name": "BAZA"
+    }
+  ],
+  "meta": {
+    "status": "success",
+    "pages_processed": 1,
+    "cards_processed": 17,
+    "details": null,
+    "last_state": "catalog_page_detector",
+    "last_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=%D0%904476706600"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "source_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=31608683332",
+  "article": "31608683332",
+  "is_complete": true,
+  "valid_listing_count": 6,
+  "sellers": [
+    {
+      "seller_url": null,
+      "seller_reviews": 158,
+      "seller_id": "i206694595",
+      "seller_name": "Real_Store"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 140,
+      "seller_id": "476cba281f933ef80ebcca9b80b7744a",
+      "seller_name": "AMS Parts"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 47,
+      "seller_id": "cfc4af3ba7439cc416b82ee9820b8103",
+      "seller_name": "AVTOMASTER A30"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 8,
+      "seller_id": "48bb78fe71ad654510b862f6fa7ff82c",
+      "seller_name": "MB-Motors"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 31,
+      "seller_id": "i355149829",
+      "seller_name": "Auto8 запчасти для европейских авто"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 75,
+      "seller_id": "i321108005",
+      "seller_name": "DarkShop"
+    }
+  ],
+  "meta": {
+    "status": "success",
+    "pages_processed": 1,
+    "cards_processed": 41,
+    "details": null,
+    "last_state": "catalog_page_detector",
+    "last_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=31608683332"
+  }
+}

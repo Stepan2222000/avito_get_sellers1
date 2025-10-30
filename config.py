@@ -18,6 +18,8 @@ class PathSettings:
     base_dir: Path = BASE_DIR
     urls_file: Path = field(default_factory=lambda: DATA_DIR / "urls.txt")
     proxies_file: Path = field(default_factory=lambda: DATA_DIR / "proxies.txt")
+    seen_sellers_file: Path = field(default_factory=lambda: DATA_DIR / "seen_sellers.txt")
+    valid_sellers_file: Path = field(default_factory=lambda: DATA_DIR / "valid_sellers.txt")
     blocked_proxies_file: Path = field(default_factory=lambda: BASE_DIR / "results" / "blocked_proxies.txt")
     results_dir: Path = field(default_factory=lambda: BASE_DIR / "results")
     details_dir: Path = field(default_factory=lambda: BASE_DIR / "results" / "details")
@@ -134,6 +136,8 @@ RESULTS_DIR = PATHS.results_dir
 LINKS_FILE = PATHS.urls_file
 PROXIES_FILE = PATHS.proxies_file
 BLOCKED_PROXIES_FILE = PATHS.blocked_proxies_file
+SEEN_SELLERS_FILE = PATHS.seen_sellers_file
+VALID_SELLERS_FILE = PATHS.valid_sellers_file
 
 MAX_PROXY_ATTEMPTS = QUEUE.max_attempts
 RETRY_DELAY_SEC = QUEUE.retry_base_delay_seconds
@@ -193,6 +197,8 @@ __all__ = [
     "LINKS_FILE",
     "PROXIES_FILE",
     "BLOCKED_PROXIES_FILE",
+    "SEEN_SELLERS_FILE",
+    "VALID_SELLERS_FILE",
     "MAX_PROXY_ATTEMPTS",
     "RETRY_DELAY_SEC",
     "WORKER_COUNT",

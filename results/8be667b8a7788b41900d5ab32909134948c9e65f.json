@@ -1,0 +1,136 @@
+{
+  "source_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=34117991101",
+  "article": "34117991101",
+  "is_complete": true,
+  "valid_listing_count": 21,
+  "sellers": [
+    {
+      "seller_url": null,
+      "seller_reviews": 107,
+      "seller_id": "b17d2da03af2f976c55ad4970f2491c2",
+      "seller_name": "Антон"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 121,
+      "seller_id": "premiumauto108",
+      "seller_name": "PremiumAuto"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 426,
+      "seller_id": "i194198209",
+      "seller_name": "Bimmer originals msk"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 111,
+      "seller_id": "i1593097",
+      "seller_name": "Rasil"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 499,
+      "seller_id": "art-auto",
+      "seller_name": "ART-AUTO"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 18,
+      "seller_id": "4f61cb9ef21cda5d59a6e0d7285ce347",
+      "seller_name": "AUANGART - Запчасти и комплектующие"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 1,
+      "seller_id": "sergey.parts",
+      "seller_name": "Сергей"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 60,
+      "seller_id": "i177719786",
+      "seller_name": "BMW Parts"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 40,
+      "seller_id": "383fb351334cc78ee5e5dacc63a2f382",
+      "seller_name": "DealerParts"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 582,
+      "seller_id": "i356354892",
+      "seller_name": "AutoNut"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 640,
+      "seller_id": "7859ddf1f1729518cbe07c7027208c48",
+      "seller_name": "MOSZAPCAST ORIGINAL PARTS"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 813,
+      "seller_id": "i30200091",
+      "seller_name": "СВОЯАВТОБАЗА"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 46,
+      "seller_id": "d41dae292c9a7b861180921998fb3c8a",
+      "seller_name": "Мирус EasyAuto"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 69,
+      "seller_id": "41547f5b2886a9fbcffade06dda16085",
+      "seller_name": "ZAP MOSCOW"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 40,
+      "seller_id": "leon-auto",
+      "seller_name": "LEON-AUTO"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 64,
+      "seller_id": "f73971eda6b8d880f8152a17183f0240",
+      "seller_name": "NicarUFA"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 75,
+      "seller_id": "i321108005",
+      "seller_name": "DarkShop"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 186,
+      "seller_id": "7aef89d6f002f959af399f43e5b0f869",
+      "seller_name": "Авто Деталь - Автозапчасти для иномарок"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 563,
+      "seller_id": "i78832865",
+      "seller_name": "Академия - Оригинальные запчасти премиум сегмента"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 558,
+      "seller_id": "i24614114",
+      "seller_name": "Специализированный магазин запчастей Mercedes и BMW"
+    }
+  ],
+  "meta": {
+    "status": "success",
+    "pages_processed": 3,
+    "cards_processed": 117,
+    "details": null,
+    "last_state": "catalog_page_detector",
+    "last_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?p=3&q=34117991101"
+  }
+}

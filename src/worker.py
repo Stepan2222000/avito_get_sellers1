@@ -25,6 +25,7 @@ from src.proxy_pool import ProxyEndpoint, ProxyPool
 from src.queue import CatalogTask, CatalogTaskQueue
 from src.validator_runner import extract_article_from_url
 from src.validation_executor import ValidationExecutor, ValidationJob
+from src.seller_registry import SellerRegistry
 from src.result_utils import SELLER_FIELDS
 
 CATALOG_FIELDS = {
@@ -153,11 +154,13 @@ class CatalogWorker:
         queue: CatalogTaskQueue,
         proxy_pool: ProxyPool,
         validation_executor: ValidationExecutor,
+        seller_registry: SellerRegistry,
     ) -> None:
         self.worker_id = worker_id
         self.queue = queue
         self.proxy_pool = proxy_pool
         self.validation_executor = validation_executor
+        self.seller_registry = seller_registry
 
         self._playwright: Optional[Playwright] = None
         self._browser: Optional[Browser] = None
@@ -242,6 +245,14 @@ class CatalogWorker:
 
             article = extract_article_from_url(url)
             listing_payloads = [_listing_to_dict(listing) for listing in listings]
+            filtered_listings, skipped_sellers = await self.seller_registry.filter_new_listings(listing_payloads)
+            if skipped_sellers:
+                log_event(
+                    "validation_seen_sellers_skipped",
+                    worker_id=self.worker_id,
+                    item_id=task.task_key,
+                    skipped=len(skipped_sellers),
+                )
 
             result_path = _result_path(payload)
             status = meta.status if meta else None
@@ -252,7 +263,7 @@ class CatalogWorker:
                 attempt=task.attempt,
                 url=url,
                 article=article,
-                listings=listing_payloads,
+                listings=filtered_listings,
                 meta=meta,
                 status=status,
                 status_label=status_value,

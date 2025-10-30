@@ -1,0 +1,88 @@
+{
+  "source_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=31316871789",
+  "article": "31316871789",
+  "is_complete": true,
+  "valid_listing_count": 12,
+  "sellers": [
+    {
+      "seller_url": null,
+      "seller_reviews": 121,
+      "seller_id": "premiumauto108",
+      "seller_name": "PremiumAuto"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 582,
+      "seller_id": "i356354892",
+      "seller_name": "AutoNut"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 206,
+      "seller_id": "i142556764",
+      "seller_name": "PDA.STORE - ORIGINAL PARTS"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 240,
+      "seller_id": "6640ef7698315f7761e95156ef443d2e",
+      "seller_name": "BAZA"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 563,
+      "seller_id": "i78832865",
+      "seller_name": "Академия - Оригинальные запчасти премиум сегмента"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 190,
+      "seller_id": "eliteparts",
+      "seller_name": "Elite Parts"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 102,
+      "seller_id": "a84d1a3220ec987c51c8370b640f8e38",
+      "seller_name": "Pro Auto Parts"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 167,
+      "seller_id": "newzap",
+      "seller_name": "NewZap - 100% оригинальные запчасти"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 107,
+      "seller_id": "i183219379",
+      "seller_name": "Vilconti-auto"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 628,
+      "seller_id": "mbdrive",
+      "seller_name": "MBDrive - Мир немецких запчастей"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 167,
+      "seller_id": "autopotok",
+      "seller_name": "Автопоток - 100% оригинальные запчасти"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 707,
+      "seller_id": "i286401137",
+      "seller_name": "Автозапчасти и Шины BERRU"
+    }
+  ],
+  "meta": {
+    "status": "success",
+    "pages_processed": 1,
+    "cards_processed": 50,
+    "details": null,
+    "last_state": "catalog_page_detector",
+    "last_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=31316871789"
+  }
+}

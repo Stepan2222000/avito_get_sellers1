@@ -14,6 +14,7 @@ from src.log import log_event
 from src.proxy_pool import ProxyPool
 from src.queue import CatalogTaskQueue
 from src.result_utils import collect_sellers, ensure_parent_dir, meta_to_dict
+from src.seller_registry import SellerRegistry, _extract_seller_id
 from src.validator_runner import ValidationOutcome, validate_catalog
 
 
@@ -51,6 +52,7 @@ class ValidationExecutor:
         request_timeout: float,
         max_retries: int,
         retry_delay: float,
+        seller_registry: SellerRegistry,
     ) -> None:
         self._queue = queue
         self._proxy_pool = proxy_pool
@@ -64,6 +66,7 @@ class ValidationExecutor:
         self._concurrency = max(1, concurrency)
         self._active_jobs = 0
         self._active_lock = asyncio.Lock()
+        self._seller_registry = seller_registry
 
     def start(self) -> None:
         if self._started:
@@ -201,6 +204,17 @@ class ValidationExecutor:
             model_used=outcome.model_used,
         )
 
+        if self._seller_registry:
+            seen_ids = {
+                seller_id
+                for seller_id in (
+                    _extract_seller_id(listing) for listing in job.listings
+                )
+                if seller_id
+            }
+            if seen_ids:
+                await self._seller_registry.mark_seen(seen_ids)
+
         if sellers:
             await ensure_parent_dir(job.result_path)
             data = {
@@ -218,6 +232,13 @@ class ValidationExecutor:
                 json.dumps(data, ensure_ascii=False, indent=2),
                 "utf-8",
             )
+            valid_ids = {
+                seller.get("seller_id")
+                for seller in sellers
+                if seller.get("seller_id")
+            }
+            if valid_ids and self._seller_registry:
+                await self._seller_registry.append_valid_urls(valid_ids)
 
         status_value = job.status.value if isinstance(job.status, CatalogParseStatus) else job.status_label
 

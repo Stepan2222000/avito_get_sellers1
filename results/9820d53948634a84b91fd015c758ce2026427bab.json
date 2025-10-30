@@ -1,0 +1,58 @@
+{
+  "source_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=11217580483",
+  "article": "11217580483",
+  "is_complete": true,
+  "valid_listing_count": 8,
+  "sellers": [
+    {
+      "seller_url": null,
+      "seller_reviews": 28,
+      "seller_id": "45e978bb6cebe52e9dd749cb6c33d7e1",
+      "seller_name": "Auto Garage"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 1,
+      "seller_id": "dash_b",
+      "seller_name": "DASH Брянск"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 453,
+      "seller_id": "i128360461",
+      "seller_name": "Запчасти BMW"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 263,
+      "seller_id": "i363187293",
+      "seller_name": "Кос-Хонда+"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 530,
+      "seller_id": "i352373924",
+      "seller_name": "КОС-Датчик"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 13,
+      "seller_id": "782fd82bda12fab023f5447cd4396cee",
+      "seller_name": "Оптовичок"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 357,
+      "seller_id": "dach_m",
+      "seller_name": "DASH"
+    }
+  ],
+  "meta": {
+    "status": "success",
+    "pages_processed": 3,
+    "cards_processed": 150,
+    "details": null,
+    "last_state": "catalog_page_detector",
+    "last_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?context=H4sIAAAAAAAA_wEmANn_YToxOntzOjE6InkiO3M6MTY6InRrMkN5Nkg1dXRCanJxY0UiO31h3QtLJgAAAA&p=3&q=11217580483"
+  }
+}

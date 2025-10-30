@@ -1,0 +1,40 @@
+{
+  "source_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?q=31608683331",
+  "article": "31608683331",
+  "is_complete": true,
+  "valid_listing_count": 4,
+  "sellers": [
+    {
+      "seller_url": null,
+      "seller_reviews": 448,
+      "seller_id": "i158235842",
+      "seller_name": "AutoSfera"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 47,
+      "seller_id": "cfc4af3ba7439cc416b82ee9820b8103",
+      "seller_name": "AVTOMASTER A30"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 257,
+      "seller_id": "mos.parts",
+      "seller_name": "MOS PARTS"
+    },
+    {
+      "seller_url": null,
+      "seller_reviews": 75,
+      "seller_id": "i321108005",
+      "seller_name": "DarkShop"
+    }
+  ],
+  "meta": {
+    "status": "success",
+    "pages_processed": 2,
+    "cards_processed": 56,
+    "details": null,
+    "last_state": "catalog_page_detector",
+    "last_url": "https://www.avito.ru/all/zapchasti_i_aksessuary/zapchasti/dlya_avtomobiley-ASgBAgICAkQKJKwJ~GM?context=H4sIAAAAAAAA_wEmANn_YToxOntzOjE6InkiO3M6MTY6Ik5EdXc4cFRtMDJoSFdneGEiO32SbvDGJgAAAA&p=2&q=31608683331"
+  }
+}

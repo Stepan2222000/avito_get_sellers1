@@ -12,6 +12,7 @@ from src.proxy_pool import ProxyPool
 from src.queue import CatalogTaskQueue
 from src.worker import CatalogWorker
 from src.validation_executor import ValidationExecutor
+from src.seller_registry import SellerRegistry
 
 WORKER_RESTART_DELAY = 1.0
 
@@ -75,7 +76,7 @@ async def _prepare_tasks(urls: Iterable[str]) -> list[Tuple[str, dict[str, str]]
     return tasks
 
 
-async def bootstrap_runner() -> tuple[CatalogTaskQueue, ProxyPool, ValidationExecutor]:
+async def bootstrap_runner() -> tuple[CatalogTaskQueue, ProxyPool, ValidationExecutor, SellerRegistry]:
     """Прочитать входные данные, инициализировать очередь и пул прокси."""
     links = await _read_lines(config.LINKS_FILE)
     urls = _deduplicate_urls(links)
@@ -85,6 +86,10 @@ async def bootstrap_runner() -> tuple[CatalogTaskQueue, ProxyPool, ValidationExe
     inserted = await queue.put_many(task_items)
 
     proxy_pool = await ProxyPool.create(config)
+    seller_registry = await SellerRegistry.create(
+        seen_path=config.SEEN_SELLERS_FILE,
+        valid_path=config.VALID_SELLERS_FILE,
+    )
     validation_executor = ValidationExecutor(
         queue=queue,
         proxy_pool=proxy_pool,
@@ -92,6 +97,7 @@ async def bootstrap_runner() -> tuple[CatalogTaskQueue, ProxyPool, ValidationExe
         request_timeout=config.VALIDATION_REQUEST_TIMEOUT_SEC,
         max_retries=config.VALIDATION_MAX_RETRIES,
         retry_delay=config.VALIDATION_RETRY_DELAY_SEC,
+        seller_registry=seller_registry,
     )
     validation_executor.start()
 
@@ -102,20 +108,26 @@ async def bootstrap_runner() -> tuple[CatalogTaskQueue, ProxyPool, ValidationExe
         worker_count=config.WORKER_COUNT,
         validation_concurrency=config.VALIDATION_CONCURRENCY,
     )
-    return queue, proxy_pool, validation_executor
+    return queue, proxy_pool, validation_executor, seller_registry
 
 
-async def runner_loop(queue: CatalogTaskQueue, proxy_pool: ProxyPool, validation_executor: ValidationExecutor) -> None:
+async def runner_loop(
+    queue: CatalogTaskQueue,
+    proxy_pool: ProxyPool,
+    validation_executor: ValidationExecutor,
+    seller_registry: SellerRegistry,
+) -> None:
     """Создать воркеры и подождать их завершения."""
     tasks = [
         asyncio.create_task(
-            _run_worker_with_restart(
-                worker_id=i,
-                queue=queue,
-                proxy_pool=proxy_pool,
-                validation_executor=validation_executor,
+                _run_worker_with_restart(
+                    worker_id=i,
+                    queue=queue,
+                    proxy_pool=proxy_pool,
+                    validation_executor=validation_executor,
+                    seller_registry=seller_registry,
+                )
             )
-        )
         for i in range(config.WORKER_COUNT)
     ]
 
@@ -130,8 +142,8 @@ async def runner_loop(queue: CatalogTaskQueue, proxy_pool: ProxyPool, validation
 
 async def main() -> None:
     """Точка входа для запуска через `python -m src.runner`."""
-    queue, proxy_pool, validation_executor = await bootstrap_runner()
-    await runner_loop(queue, proxy_pool, validation_executor)
+    queue, proxy_pool, validation_executor, seller_registry = await bootstrap_runner()
+    await runner_loop(queue, proxy_pool, validation_executor, seller_registry)
 
 
 async def _run_worker_with_restart(
@@ -140,6 +152,7 @@ async def _run_worker_with_restart(
     queue: CatalogTaskQueue,
     proxy_pool: ProxyPool,
     validation_executor: ValidationExecutor,
+    seller_registry: SellerRegistry,
 ) -> None:
     """Обёртка, которая перезапускает воркер при аварийном завершении."""
     restart_count = 0
@@ -149,6 +162,7 @@ async def _run_worker_with_restart(
             queue=queue,
             proxy_pool=proxy_pool,
             validation_executor=validation_executor,
+            seller_registry=seller_registry,
         )
         try:
             await worker.run()
