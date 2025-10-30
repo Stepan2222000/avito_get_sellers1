@@ -232,13 +232,8 @@ class ValidationExecutor:
                 json.dumps(data, ensure_ascii=False, indent=2),
                 "utf-8",
             )
-            valid_ids = {
-                seller.get("seller_id")
-                for seller in sellers
-                if seller.get("seller_id")
-            }
-            if valid_ids and self._seller_registry:
-                await self._seller_registry.append_valid_urls(valid_ids)
+            if sellers and self._seller_registry:
+                await self._seller_registry.append_valid_sellers(sellers)
 
         status_value = job.status.value if isinstance(job.status, CatalogParseStatus) else job.status_label
 

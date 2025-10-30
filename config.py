@@ -98,6 +98,7 @@ class ValidationExecutorSettings:
     request_timeout: float = 500.0
     max_retries: int = 3
     retry_delay_seconds: float = 5.0
+    min_reviews_for_valid_export: int = 40
 
 
 @dataclass(slots=True)
@@ -181,6 +182,7 @@ VALIDATION_CONCURRENCY = VALIDATION_EXECUTOR.concurrency
 VALIDATION_REQUEST_TIMEOUT_SEC = VALIDATION_EXECUTOR.request_timeout
 VALIDATION_MAX_RETRIES = VALIDATION_EXECUTOR.max_retries
 VALIDATION_RETRY_DELAY_SEC = VALIDATION_EXECUTOR.retry_delay_seconds
+VALID_SELLER_REVIEWS_THRESHOLD = VALIDATION_EXECUTOR.min_reviews_for_valid_export
 
 __all__ = [
     "CONFIG",
@@ -233,4 +235,5 @@ __all__ = [
     "VALIDATION_REQUEST_TIMEOUT_SEC",
     "VALIDATION_MAX_RETRIES",
     "VALIDATION_RETRY_DELAY_SEC",
+    "VALID_SELLER_REVIEWS_THRESHOLD",
 ]

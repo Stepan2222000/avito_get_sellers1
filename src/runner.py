@@ -89,6 +89,7 @@ async def bootstrap_runner() -> tuple[CatalogTaskQueue, ProxyPool, ValidationExe
     seller_registry = await SellerRegistry.create(
         seen_path=config.SEEN_SELLERS_FILE,
         valid_path=config.VALID_SELLERS_FILE,
+        min_reviews_for_valid_export=config.VALID_SELLER_REVIEWS_THRESHOLD,
     )
     validation_executor = ValidationExecutor(
         queue=queue,
