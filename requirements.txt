@@ -1,0 +1,4 @@
+git+https://github.com/Stepan2222000/avito-library.git@main#egg=avito-library
+playwright>=1.47.0
+google-genai[aiohttp]>=0.6.0
+openai>=1.50.0
