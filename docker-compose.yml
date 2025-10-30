@@ -8,6 +8,6 @@ services:
       - DISPLAY=:99
     entrypoint: ["/app/docker-entrypoint.sh", "python", "-m", "src.runner"]
     volumes:
-      - ${HOST_DATA_DIR:-./data}:/app/data:ro
+      - ${HOST_DATA_DIR:-./data}:/app/data
       - ${HOST_RESULTS_DIR:-./results}:/app/results
     restart: "no"
