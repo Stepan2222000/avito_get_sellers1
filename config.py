@@ -47,7 +47,7 @@ class PlaywrightSettings:
 
 @dataclass(slots=True)
 class GeminiSettings:
-    api_key: str = "AIzaSyBYPiXtSWY3fSQjXhPnbSP0iCzBHngpetg"
+    api_key: str = ""
     model: str = "gemini-2.5-flash"
     concurrency: int = 10
     temperature: float = 0.1
@@ -68,7 +68,7 @@ class OpenAISettings:
 
 @dataclass(slots=True)
 class DeepInfraSettings:
-    api_key: Optional[str] = "ZyqsQeDmt4bFp19aNn6kyK9mGPDgId2H"
+    api_key: Optional[str] = None
     base_url: str = "https://api.deepinfra.com/v1/openai"
     model: str = "deepseek-ai/DeepSeek-V3.1-Terminus"
     reasoning_enabled: bool = True
@@ -85,7 +85,7 @@ class ProviderSettings:
 
 @dataclass(slots=True)
 class ValidationSettings:
-    worker_count: int = 3
+    worker_count: int = 15
     source_name: str = "urls_file"
     max_items_per_seller: int = 100
     max_pages_per_seller: int = 5

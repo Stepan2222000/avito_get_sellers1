@@ -109,7 +109,7 @@ class SellerRegistry:
                 if reviews < self._min_reviews:
                     continue
                 self._valid_ids.add(seller_id)
-                new_urls.append(f"https://www.avito.ru/brand/{seller_id}")
+                new_urls.append(f"https://www.avito.ru/brands/{seller_id}")
         if new_urls:
             await self._append_lines(self._valid_path, new_urls)
 
